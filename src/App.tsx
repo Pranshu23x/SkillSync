@@ -311,7 +311,7 @@ ${resumeText}`;
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Brain className="w-6 h-6 text-blue-600 animate-pulse" />
-              <h3 className="text-lg font-semibold">Analyzing Resume...</h3>
+              <h3 className="text-lg font-semibold">Beep Boop Beep ⚙️</h3>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
