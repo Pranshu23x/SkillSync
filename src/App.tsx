@@ -266,9 +266,9 @@ ${resumeText}`;
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-3">
             <Target className="w-8 h-8" />
-            <h1 className="text-2xl font-bold">SkillSync.io</h1>
+            <h1 className="text-2xl font-bold">SkillSync ⚡</h1>
           </div>
-          <p className="text-blue-100 mt-1">AI-powered resume analysis and internship matching</p>
+          <p className="text-blue-100 mt-1"> An Al-Based Internship Recommendation Engine for PM Internship Scheme </p>
         </div>
       </header>
 
