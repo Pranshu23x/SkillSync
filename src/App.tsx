@@ -435,6 +435,20 @@ ${resumeText}`;
           </div>
         )}
       </main>
+     <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
+  <p className="text-sm text-gray-600">
+    Built with TeamWork By{" "}
+    <a
+      href="https://credits-seven.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline font-medium"
+    >
+      CodexCrew 🔥
+    </a>
+  </p>
+</footer>
+
     </div>
   );
 }
