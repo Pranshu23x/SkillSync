@@ -291,10 +291,10 @@ ${resumeText}`;
               Upload Your Resume
             </h3>
             <p className="text-gray-600 mb-4">
-              Drag and drop your PDF resume here, or click to browse
+             Drag it or drop it (Its too hot 🔥)
             </p>
             <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Choose File
+              Choose Resume (only PDF)
             </button>
             <input
               ref={fileInputRef}
@@ -316,7 +316,7 @@ ${resumeText}`;
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
             </div>
-            <p className="text-gray-600 mt-2">AI is analyzing your resume and finding matches...</p>
+            <p className="text-gray-600 mt-2">Polishing your resume until it is fit for internships✨</p>
           </div>
         )}
 
