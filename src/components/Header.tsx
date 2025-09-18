@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChange }) =>
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-                SkillSync.io
+                SkillSync ⚡
                 <Sparkles className="w-6 h-6 text-yellow-300" />
               </h1>
               <p className="text-blue-100 text-sm md:text-base">
