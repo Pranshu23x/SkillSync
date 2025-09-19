@@ -254,211 +254,223 @@ ${resumeText}`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Target className="w-8 h-8" />
-              <div>
-                <h1 className="text-2xl font-bold">{t('title')}</h1>
-                <p className="text-blue-100 mt-1">{t('subtitle')}</p>
-              </div>
-            </div>
-            
-            {/* Language Switcher */}
-            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
-              <Languages className="w-4 h-4" />
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as Language)}
-                className="bg-transparent border-none text-white text-sm font-medium cursor-pointer outline-none"
-              >
-                <option value="en" className="text-black">English</option>
-                <option value="hi" className="text-black">हिंदी</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Upload Section */}
-        <div className="mb-8">
-          <div
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-              isDragging 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400'
-            }`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t('uploadTitle')}
-            </h3>
-            <p className="text-gray-600 mb-4">
-              {t('uploadSubtitle')}
-            </p>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              {t('chooseFile')}
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-          </div>
-        </div>
-
-        {/* Loading State */}
-        {isAnalyzing && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Brain className="w-6 h-6 text-blue-600 animate-pulse" />
-              <h3 className="text-lg font-semibold">{t('analyzing')}</h3>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
-            </div>
-            <p className="text-gray-600 mt-2">{t('analyzingDesc')}</p>
-          </div>
-        )}
-
-        {/* Analysis Results */}
-        {analysis && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <FileText className="w-6 h-6 text-green-600" />
-              <h3 className="text-lg font-semibold">{t('analysisTitle')}</h3>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <div className="mb-4">
-                  <span className="text-2xl font-bold text-blue-600">
-                    {analysis.overall_rating}/10
-                  </span>
-                  <span className="text-gray-600 ml-2">{t('overallRating')}</span>
-                </div>
-                
-                <div className="mb-4">
-                  <h4 className="font-semibold text-green-700 mb-2">{t('strengths')}</h4>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    {Array.isArray(analysis.strengths) ? analysis.strengths.map((strength: string, index: number) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-green-500 mt-1">•</span>
-                        {strength}
-                      </li>
-                    )) : null}
-                  </ul>
+    <div 
+      className="min-h-screen bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `url('https://i.postimg.cc/MnjsXr2s/image.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Background Overlay */}
+      <div className="min-h-screen bg-black/30">
+        {/* Header */}
+        <header className="bg-white/10 backdrop-blur-md border-b border-white/20 text-white py-6 sticky top-0 z-50">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Target className="w-8 h-8 text-white drop-shadow-lg" />
+                <div>
+                  <h1 className="text-2xl font-bold text-white drop-shadow-lg">{t('title')}</h1>
+                  <p className="text-white/80 mt-1 drop-shadow-md">{t('subtitle')}</p>
                 </div>
               </div>
               
-              <div>
-                <div className="mb-4">
-                  <h4 className="font-semibold text-orange-700 mb-2">{t('weaknesses')}</h4>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    {Array.isArray(analysis.weaknesses) ? analysis.weaknesses.map((weakness: string, index: number) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-orange-500 mt-1">•</span>
-                        {weakness}
-                      </li>
-                    )) : null}
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold text-blue-700 mb-2">{t('suggestions')}</h4>
-                  <ul className="text-sm text-gray-700 space-y-1">
-                    {Array.isArray(analysis.suggestions) ? analysis.suggestions.map((suggestion: string, index: number) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-blue-500 mt-1">•</span>
-                        {suggestion}
-                      </li>
-                    )) : null}
-                  </ul>
-                </div>
+              {/* Language Switcher */}
+              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/30">
+                <Languages className="w-4 h-4" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as Language)}
+                  className="bg-transparent border-none text-white text-sm font-medium cursor-pointer outline-none"
+                >
+                  <option value="en" className="text-black">English</option>
+                  <option value="hi" className="text-black">हिंदी</option>
+                </select>
               </div>
             </div>
           </div>
-        )}
+        </header>
 
-        {/* Recommendations */}
-        {recommendations.length > 0 && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h3 className="text-lg font-semibold mb-4">{t('recommendedTitle')}</h3>
-            <div className="space-y-4">
-              {recommendations.map(intern => (
-                <div key={intern.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{intern.title}</h4>
-                      <p className="text-gray-600">{intern.company} • {intern.location}</p>
-                    </div>
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                      {intern.matchPercentage}% {t('matchPercentage')}
+        <main className="container mx-auto px-4 py-8 max-w-4xl">
+          {/* Upload Section - Glass Morphism */}
+          <div className="mb-8">
+            <div
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer backdrop-blur-lg ${
+                isDragging 
+                  ? 'border-blue-400/80 bg-blue-500/20 shadow-xl' 
+                  : 'border-white/30 bg-white/10 hover:bg-white/20 hover:border-white/50'
+              } shadow-2xl hover:shadow-3xl`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="w-12 h-12 text-white/80 mx-auto mb-4 drop-shadow-lg" />
+              <h3 className="text-lg font-semibold text-white mb-2 drop-shadow-lg">
+                {t('uploadTitle')}
+              </h3>
+              <p className="text-white/80 mb-4 drop-shadow-md">
+                {t('uploadSubtitle')}
+              </p>
+              <button className="bg-gradient-to-r from-blue-500/80 to-purple-600/80 backdrop-blur-sm text-white px-6 py-2 rounded-lg hover:from-blue-600/90 hover:to-purple-700/90 transition-all border border-white/20 shadow-lg hover:shadow-xl">
+                {t('chooseFile')}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {isAnalyzing && (
+            <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-8 border border-white/20">
+              <div className="flex items-center gap-3 mb-4">
+                <Brain className="w-6 h-6 text-blue-600 animate-pulse" />
+                <h3 className="text-lg font-semibold">{t('analyzing')}</h3>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+              </div>
+              <p className="text-gray-600 mt-2">{t('analyzingDesc')}</p>
+            </div>
+          )}
+
+          {/* Analysis Results */}
+          {analysis && (
+            <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-8 border border-white/20">
+              <div className="flex items-center gap-3 mb-4">
+                <FileText className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-semibold">{t('analysisTitle')}</h3>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <div className="mb-4">
+                    <span className="text-2xl font-bold text-blue-600">
+                      {analysis.overall_rating}/10
                     </span>
+                    <span className="text-gray-600 ml-2">{t('overallRating')}</span>
                   </div>
                   
-                  <p className="text-sm text-gray-700 mb-3">{intern.description}</p>
-                  
-                  <div className="mb-2">
-                    <span className="text-sm font-medium text-green-700">{t('yourMatchingSkills')} </span>
-                    <span className="text-sm text-gray-600">{intern.matchedSkills.join(', ')}</span>
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-green-700 mb-2">{t('strengths')}</h4>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      {Array.isArray(analysis.strengths) ? analysis.strengths.map((strength: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-green-500 mt-1">•</span>
+                          {strength}
+                        </li>
+                      )) : null}
+                    </ul>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-orange-700 mb-2">{t('weaknesses')}</h4>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      {Array.isArray(analysis.weaknesses) ? analysis.weaknesses.map((weakness: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-orange-500 mt-1">•</span>
+                          {weakness}
+                        </li>
+                      )) : null}
+                    </ul>
                   </div>
                   
                   <div>
-                    <span className="text-sm font-medium text-gray-700">{t('allRequiredSkills')} </span>
-                    <span className="text-sm text-gray-600">{intern.skills_required.join(', ')}</span>
+                    <h4 className="font-semibold text-blue-700 mb-2">{t('suggestions')}</h4>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      {Array.isArray(analysis.suggestions) ? analysis.suggestions.map((suggestion: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-1">•</span>
+                          {suggestion}
+                        </li>
+                      )) : null}
+                    </ul>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Skills to Gain */}
-        {skillsToGain.length > 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-4">{t('skillsToBoostTitle')}</h3>
-            <div className="grid sm:grid-cols-2 gap-3 mb-4">
-              {skillsToGain.map(({ skill, count }) => (
-                <div key={skill} className="flex justify-between items-center bg-white rounded-lg p-3">
-                  <span className="font-medium text-gray-900">{skill}</span>
-                  <span className="text-sm text-blue-600 font-semibold">
-                    +{count} {count > 1 ? t('internships') : t('internship')}
-                  </span>
-                </div>
-              ))}
+          {/* Recommendations */}
+          {recommendations.length > 0 && (
+            <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-8 border border-white/20">
+              <h3 className="text-lg font-semibold mb-4">{t('recommendedTitle')}</h3>
+              <div className="space-y-4">
+                {recommendations.map(intern => (
+                  <div key={intern.id} className="border border-gray-200/50 bg-white/50 backdrop-blur-sm rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-semibold text-gray-900">{intern.title}</h4>
+                        <p className="text-gray-600">{intern.company} • {intern.location}</p>
+                      </div>
+                      <span className="bg-green-100/80 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                        {intern.matchPercentage}% {t('matchPercentage')}
+                      </span>
+                    </div>
+                    
+                    <p className="text-sm text-gray-700 mb-3">{intern.description}</p>
+                    
+                    <div className="mb-2">
+                      <span className="text-sm font-medium text-green-700">{t('yourMatchingSkills')} </span>
+                      <span className="text-sm text-gray-600">{intern.matchedSkills.join(', ')}</span>
+                    </div>
+                    
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">{t('allRequiredSkills')} </span>
+                      <span className="text-sm text-gray-600">{intern.skills_required.join(', ')}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="bg-blue-100 rounded-lg p-4">
-              <p className="text-sm text-blue-800">
-                <strong>{t('proTip')}:</strong> {t('proTipDesc')}
-              </p>
+          )}
+
+          {/* Skills to Gain */}
+          {skillsToGain.length > 0 && (
+            <div className="bg-gradient-to-r from-blue-500/20 to-purple-600/20 backdrop-blur-md rounded-xl p-6 border border-white/20 shadow-2xl">
+              <h3 className="text-lg font-semibold mb-4 text-white drop-shadow-lg">{t('skillsToBoostTitle')}</h3>
+              <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                {skillsToGain.map(({ skill, count }) => (
+                  <div key={skill} className="flex justify-between items-center bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-white/30">
+                    <span className="font-medium text-gray-900">{skill}</span>
+                    <span className="text-sm text-blue-600 font-semibold">
+                      +{count} {count > 1 ? t('internships') : t('internship')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-blue-100/80 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                <p className="text-sm text-blue-800">
+                  <strong>{t('proTip')}:</strong> {t('proTipDesc')}
+                </p>
+              </div>
             </div>
-          </div>
-        )}
-      </main>
-           <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
-  <p className="text-sm text-gray-600">
-    Built with TeamWork By{" "}
-    <a
-      href="https://credits-seven.vercel.app/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 hover:underline font-medium"
-    >
-      CodexCrew 🔥
-    </a>
-  </p>
-</footer>
+          )}
+        </main>
+        
+        <footer className="bg-white/10 backdrop-blur-md text-center py-4 mt-8 border-t border-white/20">
+          <p className="text-sm text-white/80">
+            Built with TeamWork By{" "}
+            <a
+              href="https://credits-seven.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-300 hover:text-blue-100 hover:underline font-medium"
+            >
+              CodexCrew 🔥
+            </a>
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }
