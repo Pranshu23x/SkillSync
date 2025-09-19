@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, Brain, Target } from 'lucide-react';
+import { Upload, FileText, Brain, Target, Languages } from 'lucide-react';
+import { translations, Language, TranslationKey } from './translations';
 
 interface Internship {
   id: number;
@@ -20,6 +21,7 @@ interface InternshipMatch extends Internship {
 }
 
 function App() {
+  const [language, setLanguage] = useState<Language>('en');
   const [internships, setInternships] = useState<Internship[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -28,6 +30,8 @@ function App() {
   const [recommendations, setRecommendations] = useState<InternshipMatch[]>([]);
   const [skillsToGain, setSkillsToGain] = useState<Array<{ skill: string; count: number }>>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const t = (key: TranslationKey): string => translations[language][key];
 
   // Load internships data
   useEffect(() => {
@@ -105,26 +109,25 @@ function App() {
     const apiKey = "AIzaSyBpl2jIVgdaKfHM6Hzniwr_HTVhX2_bD5A";
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    const promptText = `You are a professional resume expert.  
-Analyze the following resume carefully and respond with a JSON object ONLY (no additional commentary or text).  
+    const promptText = `You are a professional resume expert. Analyze the following resume text carefully and provide specific, personalized feedback based on the actual content.
 
-The JSON must strictly follow this structure:  
+Respond with a JSON object ONLY (no additional commentary or text) that follows this structure:
 
 {
-  "overall_rating": number,         // 0–10 (can be decimal, e.g., 7.5)
+  "overall_rating": number,  // Rate 0-10 based on actual resume content, experience level, skills mentioned
   "strengths": [
-    " Strong in <skill/area>",
-    " Strong in <another skill>"
+    "Specific strength based on resume content",
+    "Another specific strength from the resume"
   ],
   "weaknesses": [
-    " Weak in <skill/area>",
-    " Needs improvement in <another skill>"
+    "Specific weakness identified in the resume",
+    "Another area for improvement"
   ],
   "suggestions": [
-    " Suggest adding <thing>",
-    " Suggest improving <thing>"
+    "Specific actionable suggestion based on resume analysis",
+    "Another specific suggestion for improvement"
   ],
-  "raw_analysis": "Provide a detailed plain-text analysis here if needed."
+  "raw_analysis": "Detailed analysis of the resume content, highlighting specific experiences, projects, and skills mentioned"
 }
 
 Rules:  
@@ -168,23 +171,14 @@ ${resumeText}`;
         if (parsed && typeof parsed === 'object') {
           setAnalysis(parsed);
           
-          // Save score to localStorage
-          const resumeScore = typeof parsed.overall_rating === 'number' ? parsed.overall_rating : parseFloat(parsed.overall_rating);
-          if (!Number.isNaN(resumeScore)) {
-            localStorage.setItem('findme_resume_score', JSON.stringify({ 
-              score: resumeScore, 
-              savedAt: new Date().toISOString(), 
-              rawText: aiText 
-            }));
-          }
-
           // Generate recommendations
           generateRecommendations(resumeText);
         }
+      } else {
+        console.warn('Failed to parse AI response as JSON');
       }
     } catch (error) {
-      console.error('Error calling Gemini:', error);
-      alert('Failed to analyze resume');
+      console.error('Error calling Gemini API:', error);
     } finally {
       setIsAnalyzing(false);
     }
@@ -264,11 +258,28 @@ ${resumeText}`;
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3">
-            <Target className="w-8 h-8" />
-            <h1 className="text-2xl font-bold">SkillSync ⚡</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Target className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-bold">{t('title')}</h1>
+                <p className="text-blue-100 mt-1">{t('subtitle')}</p>
+              </div>
+            </div>
+            
+            {/* Language Switcher */}
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
+              <Languages className="w-4 h-4" />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as Language)}
+                className="bg-transparent border-none text-white text-sm font-medium cursor-pointer outline-none"
+              >
+                <option value="en" className="text-black">English</option>
+                <option value="hi" className="text-black">हिंदी</option>
+              </select>
+            </div>
           </div>
-          <p className="text-blue-100 mt-1"> An Al-Based Internship Recommendation Engine for PM Internship Scheme </p>
         </div>
       </header>
 
@@ -288,13 +299,13 @@ ${resumeText}`;
           >
             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Upload Your Resume
+              {t('uploadTitle')}
             </h3>
             <p className="text-gray-600 mb-4">
-             Drag it or drop it (Its too hot 🔥)
+              {t('uploadSubtitle')}
             </p>
             <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Choose Resume (only PDF)
+              {t('chooseFile')}
             </button>
             <input
               ref={fileInputRef}
@@ -311,12 +322,12 @@ ${resumeText}`;
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Brain className="w-6 h-6 text-blue-600 animate-pulse" />
-              <h3 className="text-lg font-semibold">Beep Boop Beep ⚙️</h3>
+              <h3 className="text-lg font-semibold">{t('analyzing')}</h3>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
             </div>
-            <p className="text-gray-600 mt-2">Polishing your resume until it is fit for internships✨</p>
+            <p className="text-gray-600 mt-2">{t('analyzingDesc')}</p>
           </div>
         )}
 
@@ -325,7 +336,7 @@ ${resumeText}`;
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
               <FileText className="w-6 h-6 text-green-600" />
-              <h3 className="text-lg font-semibold">Resume Analysis</h3>
+              <h3 className="text-lg font-semibold">{t('analysisTitle')}</h3>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -334,16 +345,16 @@ ${resumeText}`;
                   <span className="text-2xl font-bold text-blue-600">
                     {analysis.overall_rating}/10
                   </span>
-                  <span className="text-gray-600 ml-2">Overall Rating</span>
+                  <span className="text-gray-600 ml-2">{t('overallRating')}</span>
                 </div>
                 
                 <div className="mb-4">
-                  <h4 className="font-semibold text-green-700 mb-2">Strengths</h4>
+                  <h4 className="font-semibold text-green-700 mb-2">{t('strengths')}</h4>
                   <ul className="text-sm text-gray-700 space-y-1">
                     {Array.isArray(analysis.strengths) ? analysis.strengths.map((strength: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-green-500 mt-1">•</span>
-                        {strength.trim()}
+                        {strength}
                       </li>
                     )) : null}
                   </ul>
@@ -352,24 +363,24 @@ ${resumeText}`;
               
               <div>
                 <div className="mb-4">
-                  <h4 className="font-semibold text-orange-700 mb-2">Areas for Improvement</h4>
+                  <h4 className="font-semibold text-orange-700 mb-2">{t('weaknesses')}</h4>
                   <ul className="text-sm text-gray-700 space-y-1">
                     {Array.isArray(analysis.weaknesses) ? analysis.weaknesses.map((weakness: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-orange-500 mt-1">•</span>
-                        {weakness.trim()}
+                        {weakness}
                       </li>
                     )) : null}
                   </ul>
                 </div>
                 
                 <div>
-                  <h4 className="font-semibold text-blue-700 mb-2">Suggestions</h4>
+                  <h4 className="font-semibold text-blue-700 mb-2">{t('suggestions')}</h4>
                   <ul className="text-sm text-gray-700 space-y-1">
                     {Array.isArray(analysis.suggestions) ? analysis.suggestions.map((suggestion: string, index: number) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-blue-500 mt-1">•</span>
-                        {suggestion.trim()}
+                        {suggestion}
                       </li>
                     )) : null}
                   </ul>
@@ -382,7 +393,7 @@ ${resumeText}`;
         {/* Recommendations */}
         {recommendations.length > 0 && (
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h3 className="text-lg font-semibold mb-4">Recommended Internships</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('recommendedTitle')}</h3>
             <div className="space-y-4">
               {recommendations.map(intern => (
                 <div key={intern.id} className="border border-gray-200 rounded-lg p-4">
@@ -392,19 +403,19 @@ ${resumeText}`;
                       <p className="text-gray-600">{intern.company} • {intern.location}</p>
                     </div>
                     <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                      {intern.matchPercentage}% match
+                      {intern.matchPercentage}% {t('matchPercentage')}
                     </span>
                   </div>
                   
                   <p className="text-sm text-gray-700 mb-3">{intern.description}</p>
                   
                   <div className="mb-2">
-                    <span className="text-sm font-medium text-green-700">Your matching skills: </span>
+                    <span className="text-sm font-medium text-green-700">{t('yourMatchingSkills')} </span>
                     <span className="text-sm text-gray-600">{intern.matchedSkills.join(', ')}</span>
                   </div>
                   
                   <div>
-                    <span className="text-sm font-medium text-gray-700">All required skills: </span>
+                    <span className="text-sm font-medium text-gray-700">{t('allRequiredSkills')} </span>
                     <span className="text-sm text-gray-600">{intern.skills_required.join(', ')}</span>
                   </div>
                 </div>
@@ -416,26 +427,26 @@ ${resumeText}`;
         {/* Skills to Gain */}
         {skillsToGain.length > 0 && (
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-4">Skills to Boost Your Opportunities</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('skillsToBoostTitle')}</h3>
             <div className="grid sm:grid-cols-2 gap-3 mb-4">
               {skillsToGain.map(({ skill, count }) => (
                 <div key={skill} className="flex justify-between items-center bg-white rounded-lg p-3">
                   <span className="font-medium text-gray-900">{skill}</span>
                   <span className="text-sm text-blue-600 font-semibold">
-                    +{count} internship{count > 1 ? 's' : ''}
+                    +{count} {count > 1 ? t('internships') : t('internship')}
                   </span>
                 </div>
               ))}
             </div>
             <div className="bg-blue-100 rounded-lg p-4">
               <p className="text-sm text-blue-800">
-                <strong>💡 Pro Tip:</strong> Focus on learning the top 3-5 skills from this list to significantly increase your internship opportunities.
+                <strong>{t('proTip')}:</strong> {t('proTipDesc')}
               </p>
             </div>
           </div>
         )}
       </main>
-     <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
+           <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
   <p className="text-sm text-gray-600">
     Built with TeamWork By{" "}
     <a
@@ -448,7 +459,6 @@ ${resumeText}`;
     </a>
   </p>
 </footer>
-
     </div>
   );
 }
