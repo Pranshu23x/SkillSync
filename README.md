@@ -1,4 +1,4 @@
-# SkillSync ⚡
+# SkillSync 
 
 An AI-powered internship recommendation engine designed for the PM Internship Scheme. SkillSync helps students find the perfect internship matches by analyzing their resumes and skills, providing personalized recommendations and career guidance.
 
